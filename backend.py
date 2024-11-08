@@ -16,8 +16,24 @@ print(y)
 y = order(deck)
 print(y)
 
+class Player:
+ def __init__(self,priority,bet,score,hand):
+   self.priority  = priority 
+   self.bet = bet
+   self.score = score 
+   self.hand = hand
 
-player1 = []
-player2 = []
-player3 = []
-player4 = []
+
+player1 = Player(0,0,0,[])
+player2 = Player(0,0,0,[])
+player3 = Player(0,0,0,[])
+player4 = Player(0,0,0,[])
+
+def snapdeal():
+      while len(deck) > 48 :
+        x = (random.randint(1,len(deck)))  
+        player1.deck[0].append(deck[x]) 
+      print(player1.deck)
+
+snapdeal()
+
