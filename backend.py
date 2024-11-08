@@ -29,11 +29,14 @@ player2 = Player(0,0,0,[])
 player3 = Player(0,0,0,[])
 player4 = Player(0,0,0,[])
 
+
+
 def snapdeal():
       while len(deck) > 48 :
-        x = (random.randint(1,len(deck)))  
-        player1.deck[0].append(deck[x]) 
-      print(player1.deck)
+        x = (random.randint(1,len(deck))) 
+        card = deck.pop[x] 
+        player1.hand.append(card) 
+      print(player1.hand)
 
 snapdeal()
 
