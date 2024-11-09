@@ -71,7 +71,7 @@ def whistdeal(round):
 orderdeck()
 shuffle(deck)
 snapdeal()
-snp2whist()
+#snp2whist()
 orderdeck()
-whistdeal(1)
+#whistdeal(1)
 
