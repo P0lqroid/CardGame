@@ -4,12 +4,11 @@ import random
 
 SCREEN_TITLE = "Whistle Hit"
 
-PLAYER_SCALING = 0.5
-COIN_SCALING = 0.25
+PLAYER_SCALING = 0.05
+CARD_SCALING = 0.15
 
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 700
-SCREEN_TITLE = "Sprite Collect Coins with Background Example"
 
 class MyGame(arcade.Window):
     """
@@ -41,7 +40,7 @@ class MyGame(arcade.Window):
         self.score = 0
         self.score_text = None
 
-        # Don't show the mouse cursor
+        # Show the mouse cursor
         self.set_mouse_visible(True)
 
 
@@ -57,23 +56,23 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        self.player_sprite = arcade.Sprite("cursor.png",
                                            PLAYER_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
-        for i in range(50):
+        for i in range(5):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            card = arcade.Sprite("Cards\c13.png", CARD_SCALING)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            card.center_x = random.randrange(SCREEN_WIDTH)
+            card.center_y = random.randrange(SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.coin_list.append(coin)
+            self.coin_list.append(card)
 
     def on_draw(self):
         """
