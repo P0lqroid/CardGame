@@ -77,22 +77,33 @@ snp2whist()
 whistdeal(1)
 
 ######  IRISH SNAP  ##########
+global snap
 snap = False
-downpile = ['H0','Z34','h22','l74','i83']
-turncount = 0 
+downpile = ['H01','Z07','h03','l07','i83']
+turncount = 1
 def checksnap():
   x = downpile[turncount]
   y = downpile[turncount - 1]
-  x1 = x[1:]
-  y1 = y[1:]
+  x1 = int(x[1:])
+  y1 = int(y[1:])
   if x1 == y1 :
     snap = True 
     print('SNAP !!')
-  if x1 == turncount % 13:
-    snap == True 
+  '''second part below'''
+  print((turncount%14))
+  if x1 == (turncount % 14):
+    snap = True 
     print('SNAP')
 
 '''while snap == False:'''
   #shuffle()
   #snapdeal()
+def playerturn():
+ player_index = 0
+ i = len()
+ card = players[player_index].hand.pop(i)
+ downpile.append(card)
+ print(downpile)
 checksnap()
+playerturn()
+display_hands()
