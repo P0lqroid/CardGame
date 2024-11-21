@@ -111,13 +111,15 @@ def playerturn():
  card = players[x].hand.pop(i)
  downpile.append(card)
  print(downpile,'\n')
- player_index = (x + 1) % 4 
+ 
 
 def game():
  # while snap == False:
     askplace()
     checksnap()
     display_hands()
+    
 
 while snap == False :
- game()
+  game()
+
