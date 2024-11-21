@@ -30,11 +30,14 @@ player4 = Player(0,0,0,[])
 
 players = [player1,player2,player3,player4]
 
+global player_index
+player_index = 0
+
 def display_hands():
- print(player1.hand, len(player1.hand))
- print(player2.hand, len(player2.hand))
- print(player3.hand, len(player3.hand))
- print(player4.hand, len(player4.hand))
+ print(player1.hand,'player1', len(player1.hand))
+ print(player2.hand,'player2', len(player2.hand))
+ print(player3.hand,'player3', len(player3.hand))
+ print(player4.hand,'player4', len(player4.hand))
 
 def snp2whist():
       player1.hand = []
@@ -69,41 +72,52 @@ def whistdeal(round):
       display_hands()
       print(len(deck))
 
+###   dealing    ###
 
 shuffle(deck)
 snapdeal()
-snp2whist()
 
-whistdeal(1)
 
 ######  IRISH SNAP  ##########
 global snap
 snap = False
-downpile = ['H01','Z07','h03','l07','i83']
+downpile = []
 turncount = 1
 def checksnap():
-  x = downpile[turncount]
-  y = downpile[turncount - 1]
-  x1 = int(x[1:])
-  y1 = int(y[1:])
-  if x1 == y1 :
+  if len(downpile) < 1:
+   x = downpile[turncount]
+   y = downpile[turncount - 1]
+   x1 = int(x[1:])
+   y1 = int(y[1:])
+   if x1 == y1 :
     snap = True 
     print('SNAP !!')
-  '''second part below'''
-  print((turncount%14))
-  if x1 == (turncount % 14):
-    snap = True 
-    print('SNAP')
 
-'''while snap == False:'''
-  #shuffle()
-  #snapdeal()
+  '''second part below'''
+  # print((turncount%14))
+  '''#if x1 == (turncount % 14):
+    snap = True 
+    print('SNAP')'''
+
+def askplace():
+  place = input('do you want to play')
+  if place == 'yes':
+    playerturn()
+
 def playerturn():
  player_index = 0
- i = len()
- card = players[player_index].hand.pop(i)
+ x = player_index 
+ i = (len(players[x].hand)-1)
+ card = players[x].hand.pop(i)
  downpile.append(card)
- print(downpile)
-checksnap()
-playerturn()
-display_hands()
+ print(downpile,'\n')
+ player_index = (x + 1) % 4 
+
+def game():
+ # while snap == False:
+    askplace()
+    checksnap()
+    display_hands()
+
+while snap == False :
+ game()
