@@ -82,30 +82,35 @@ snapdeal()
 global snap
 snap = False
 downpile = []
-turncount = 1
+turncount = 0
 def checksnap():
-  if len(downpile) < 1:
-   x = downpile[turncount]
-   y = downpile[turncount - 1]
+  if len(downpile) > 1:
+   x = downpile[-1]
+   y = downpile[-2]
    x1 = int(x[1:])
    y1 = int(y[1:])
    if x1 == y1 :
-    snap = True 
     print('SNAP !!')
+    snap == True 
+  if len(downpile) > 0:
+   tc = str(turncount+1).zfill(2)
+   print(tc)
+   tc = int(tc)
+   x = downpile[-1]
+   x1 = int(x[1:])
+   if tc == x1 : 
+    print('snap22')
+    snap == True
 
-  '''second part below'''
-  # print((turncount%14))
-  '''#if x1 == (turncount % 14):
-    snap = True 
-    print('SNAP')'''
 
 def askplace():
   place = input('do you want to play')
   if place == 'yes':
     playerturn()
+  else:
+    askplace()
 
 def playerturn():
- player_index = 0
  x = player_index 
  i = (len(players[x].hand)-1)
  card = players[x].hand.pop(i)
@@ -113,13 +118,21 @@ def playerturn():
  print(downpile,'\n')
  
 
-def game():
+def wholeturn():
  # while snap == False:
     askplace()
     checksnap()
     display_hands()
     
+    
 
 while snap == False :
-  game()
+  x = player_index 
+  wholeturn()
+  player_index = (x + 1) % 4 
+  print(player_index)
+  turncount = turncount + 1
+
+
+print('count clicks')
 
