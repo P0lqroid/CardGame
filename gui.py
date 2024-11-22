@@ -10,7 +10,50 @@ CARD_SCALING = 0.15
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 700
 
-class MyGame(arcade.Window):
+
+def startup():
+    ogdeck = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
+    deck = ogdeck.copy
+
+    def shuffle(x):
+        random.shuffle(x)
+        random.shuffle(x)
+        return x
+
+    def orderdeck():
+        global deck
+        deck = ogdeck.copy
+
+
+
+    class Player:
+        def __init__(self,priority,bet,score,hand):
+            self.priority  = priority 
+            self.bet = bet
+            self.score = score 
+            self.hand = hand
+
+
+    player1 = Player(0,0,0,[])
+    player2 = Player(0,0,0,[])
+    player3 = Player(0,0,0,[])
+    player4 = Player(0,0,0,[])
+
+    players = [player1,player2,player3,player4]
+
+def snapdeal():
+      global players
+      player_index = 0
+      while len(deck) > 1 : 
+        x = (random.randint(0,len(deck)-1)) 
+        card = deck.pop(x) 
+        players[player_index].hand.append(card) 
+        player_index = (player_index + 1) % 4 
+      if deck:
+        last_card = deck.pop()  
+        players[player_index].hand.append(last_card)
+
+class snapGame(arcade.Window):
     """
     Main application class.
     """
@@ -21,10 +64,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
 
@@ -33,7 +72,7 @@ class MyGame(arcade.Window):
 
         # Variables that will hold sprite lists
         self.player_list = None
-        self.coin_list = None
+        self.card_list = None
 
         # Set up the player info
         self.player_sprite = None
@@ -41,18 +80,35 @@ class MyGame(arcade.Window):
         self.score_text = None
 
         # Show the mouse cursor
-        self.set_mouse_visible(True)
+        self.set_mouse_visible(False)
 
+    def card_update(self):
+        global player1
+        global player2
+        global player3
+        global player4
+
+        for i in range(len(player1.hand)):
+            cardimage=str(player1.hand[i]+".png")
+            print (cardimage)
+            card = arcade.Sprite(cardimage,CARD_SCALING)
+            xPos = int(100+(int(i)*20))
+            card.position = (xPos, 50)
+            self.card_list.append(card)
+                    
+        
+
+    
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """ Set up the snap game and initialize the variables. """
 
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         self.background = arcade.load_texture("Cards\Table.png")
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
+        self.card_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
@@ -72,7 +128,7 @@ class MyGame(arcade.Window):
             card.center_y = random.randrange(SCREEN_HEIGHT)
 
             # Add the coin to the lists
-            self.coin_list.append(card)
+            #self.card_list.append(card)
 
     def on_draw(self):
         """
@@ -88,7 +144,7 @@ class MyGame(arcade.Window):
                                             self.background)
 
         # Draw all the sprites.
-        self.coin_list.draw()
+        self.card_list.draw()
         self.player_list.draw()
 
         # Render the text
@@ -106,20 +162,21 @@ class MyGame(arcade.Window):
 
         # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
-        self.coin_list.update()
+        self.card_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.card_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
-        for coin in hit_list:
-            coin.remove_from_sprite_lists()
+        for card in hit_list:
+            card.remove_from_sprite_lists()
             self.score += 1
 
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    startup()
+    window = snapGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
 

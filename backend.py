@@ -74,4 +74,3 @@ snapdeal()
 #snp2whist()
 orderdeck()
 #whistdeal(1)
-
