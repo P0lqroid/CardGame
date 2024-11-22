@@ -1,7 +1,7 @@
 import random 
 
-ogdeck = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
-deck = ogdeck.copy
+deck1 = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
+deck = deck1.copy()
 
 def shuffle(x):
    random.shuffle(x)
@@ -10,7 +10,7 @@ def shuffle(x):
 
 def orderdeck():
   global deck
-  deck = ogdeck.copy
+  deck = deck1.copy()
 
 #y = shuffle(deck)
 #print(y)
@@ -30,11 +30,14 @@ player4 = Player(0,0,0,[])
 
 players = [player1,player2,player3,player4]
 
+global player_index
+player_index = 0
+
 def display_hands():
- print(player1.hand, len(player1.hand))
- print(player2.hand, len(player2.hand))
- print(player3.hand, len(player3.hand))
- print(player4.hand, len(player4.hand))
+ print(player1.hand,'player1', len(player1.hand))
+ print(player2.hand,'player2', len(player2.hand))
+ print(player3.hand,'player3', len(player3.hand))
+ print(player4.hand,'player4', len(player4.hand))
 
 def snp2whist():
       player1.hand = []
@@ -42,7 +45,9 @@ def snp2whist():
       player3.hand = []
       player4.hand = []
       global deck
-      deck = ogdeck.copy
+      deck = deck1.copy
+      display_hands()
+      orderdeck()
 
 def snapdeal():
       player_index = 0
@@ -67,10 +72,67 @@ def whistdeal(round):
       display_hands()
       print(len(deck))
 
+###   dealing    ###
 
-orderdeck()
 shuffle(deck)
 snapdeal()
-#snp2whist()
-orderdeck()
-#whistdeal(1)
+
+
+######  IRISH SNAP  ##########
+global snap
+snap = False
+downpile = []
+turncount = 0
+def checksnap():
+  if len(downpile) > 1:
+   x = downpile[-1]
+   y = downpile[-2]
+   x1 = int(x[1:])
+   y1 = int(y[1:])
+   if x1 == y1 :
+    print('SNAP !!')
+    snap == True 
+  if len(downpile) > 0:
+   tc = str(turncount+1).zfill(2)
+   print(tc)
+   tc = int(tc)
+   x = downpile[-1]
+   x1 = int(x[1:])
+   if tc == x1 : 
+    print('snap22')
+    snap == True
+
+
+def askplace():
+  place = input('do you want to play')
+  if place == 'yes':
+    playerturn()
+  else:
+    askplace()
+
+def playerturn():
+ x = player_index 
+ i = (len(players[x].hand)-1)
+ card = players[x].hand.pop(i)
+ downpile.append(card)
+ print(downpile,'\n')
+ 
+
+def wholeturn():
+ # while snap == False:
+    askplace()
+    checksnap()
+    display_hands()
+    
+    
+
+while snap == False :
+  x = player_index 
+  wholeturn()
+  player_index = (x + 1) % 4 
+  print(player_index)
+  turncount = turncount + 1
+
+
+print('count clicks')
+
