@@ -38,7 +38,7 @@ def startup():
     player2 = Player(0,0,0,[])
     player3 = Player(0,0,0,[])
     player4 = Player(0,0,0,[])
-
+    global players
     players = [player1,player2,player3,player4]
 
 def snapdeal():
@@ -50,7 +50,7 @@ def snapdeal():
         players[player_index].hand.append(card) 
         player_index = (player_index + 1) % 4 
       if deck:
-        last_card = deck.pop()  
+        last_card = deck.pop()
         players[player_index].hand.append(last_card)
 
 class snapGame(arcade.Window):
@@ -83,18 +83,16 @@ class snapGame(arcade.Window):
         self.set_mouse_visible(False)
 
     def card_update(self):
-        global player1
-        global player2
-        global player3
-        global player4
+        global players
+        for player_index in range(0,3):
 
-        for i in range(len(player1.hand)):
-            cardimage=str(player1.hand[i]+".png")
-            print (cardimage)
-            card = arcade.Sprite(cardimage,CARD_SCALING)
-            xPos = int(100+(int(i)*20))
-            card.position = (xPos, 50)
-            self.card_list.append(card)
+            for i in range(len(players[player_index].hand)):
+                cardimage=str(players[player_index].hand[i]+".png")
+                print (cardimage)
+                card = arcade.Sprite(cardimage,CARD_SCALING)
+                xPos = int(100+(int(i)*20))
+                card.position = (xPos, 50)
+                self.card_list.append(card)
                     
         
 
@@ -117,6 +115,8 @@ class snapGame(arcade.Window):
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
+
+        self.card_update()
 
         for i in range(5):
 
@@ -176,6 +176,7 @@ class snapGame(arcade.Window):
 def main():
     """ Main function """
     startup()
+    snapdeal()
     window = snapGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
