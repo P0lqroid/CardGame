@@ -24,7 +24,19 @@ def startup():
         global deck
         deck = ogdeck.copy
 
+    def snapdeal():
+        global players
+        player_index = 0
+        while len(deck) > 1 : 
+            x = (random.randint(0,len(deck)-1)) 
+            card = deck.pop(x) 
+            players[player_index].hand.append(card) 
+            player_index = (player_index + 1) % 4 
+        if deck:
+            last_card = deck.pop()
+            players[player_index].hand.append(last_card)
 
+    snapdeal()
 
     class Player:
         def __init__(self,priority,bet,score,hand):
@@ -41,17 +53,7 @@ def startup():
     global players
     players = [player1,player2,player3,player4]
 
-def snapdeal():
-      global players
-      player_index = 0
-      while len(deck) > 1 : 
-        x = (random.randint(0,len(deck)-1)) 
-        card = deck.pop(x) 
-        players[player_index].hand.append(card) 
-        player_index = (player_index + 1) % 4 
-      if deck:
-        last_card = deck.pop()
-        players[player_index].hand.append(last_card)
+
 
 class snapGame(arcade.Window):
     """
@@ -176,7 +178,6 @@ class snapGame(arcade.Window):
 def main():
     """ Main function """
     startup()
-    snapdeal()
     window = snapGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
