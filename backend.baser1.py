@@ -241,8 +241,7 @@ def orderpile(a):
 def roundw ():
   refpile = roundpile.copy()
   if len(roundpile) == 4:
-    #orderpile(realtr)
-  
+    orderpile(realtr)
     target = roundpile[-1]
     for i in range(len(refpile)):
       if refpile[i] == target:
@@ -271,9 +270,10 @@ def whistmain():
 roundpile = ['h06','s04','d06','c11']
 realtr = mtrump()
 a = realtr
+
+roundw()
+'''
 orderpile(a)
-'''whistdeal(1)
+whistdeal(1)
 betting()
-whistmain()
-snapdeal()
-snapmain()'''
+whistmain()'''
