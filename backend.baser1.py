@@ -242,9 +242,9 @@ def roundw ():
   refpile = roundpile.copy()
   if len(roundpile) == 4:
     orderpile(realtr)
-    target = roundpile[-1]
+    targetx = roundpile[-1]
     for i in range(len(refpile)):
-      if refpile[i] == target:
+      if refpile[i] == targetx:
        return i   
     print('player'+ str(i+1) + 'has won')
     players[i+1].score = players[i+1].score + 1
@@ -272,6 +272,7 @@ realtr = mtrump()
 a = realtr
 
 roundw()
+
 '''
 orderpile(a)
 whistdeal(1)
