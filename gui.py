@@ -96,21 +96,55 @@ class snapGame(arcade.Window):
             cardimage=str("Cards/"+players[player].hand[i]+".png")
             cardimage="Cards/backcard1.png"
             card = arcade.Sprite(cardimage,CARD_SCALING)
-            
+            card.player=player
             if orientation=="v":
                 card.angle += angle
                 newx=int(x+int(i)*40)
                 card.position=(newx,y)
+                card.original_position = card.position
+
+                card.owner=player
                 self.card_list.append(card)
                 
             else:
                 card.angle += angle
                 newy=int(y+int(i)*40)
                 card.position=(x,newy)
+                card.original_position = card.position
+                card.owner=player
                 self.card_list.append(card)
 
     def select_card(self):
-        
+        mouse_x, mouse_y = self.player_sprite.center_x, self.player_sprite.center_y
+
+        selected_card = None  # Keep track of the selected card
+
+        for card in reversed(self.card_list):
+            if card.collides_with_point((mouse_x, mouse_y)):
+                selected_card = card  # Store the selected card
+                break  # Exit the loop once a card is selected
+
+        # If a card is selected, move it
+        if selected_card:
+            if selected_card.player == 0:
+                if selected_card.center_y < selected_card.original_position[1] + 20:  
+                    selected_card.center_y += 5
+            elif selected_card.player == 1:
+                if selected_card.center_x > selected_card.original_position[0] - 20:  
+                    selected_card.center_x -= 5
+            elif selected_card.player == 2:
+                if selected_card.center_y > selected_card.original_position[1] - 20:  
+                    selected_card.center_y -= 5
+            elif selected_card.player == 3:
+                if selected_card.center_x < selected_card.original_position[0] + 20:  
+                    selected_card.center_x += 5
+
+        # Reset other cards (if any were previously selected)
+        for card in self.card_list:
+            if card != selected_card and (card.center_x != card.original_position[0] or \
+            card.center_y != card.original_position[1]):
+                card.center_x = card.original_position[0]
+                card.center_y = card.original_position[1]
 
     def card_update(self):
         """
@@ -134,7 +168,7 @@ class snapGame(arcade.Window):
 
     def setup(self):
         """ Set up the snap game and initialize the variables. """
-
+        self.frame=0
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         self.background = arcade.load_texture("Cards\Table.png")
         # Sprite lists
@@ -182,7 +216,7 @@ class snapGame(arcade.Window):
         self.player_list.draw()
 
         # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
+        arcade.draw_text(f"Frame: {self.frame}", 10, 20, arcade.color.WHITE, 14)
         x = SCREEN_WIDTH // 2
         y = SCREEN_HEIGHT // 2
         arcade.draw_text("Player 1", x, 40, arcade.color.WHITE, 15, anchor_x="center",rotation=0)
@@ -200,6 +234,7 @@ class snapGame(arcade.Window):
         
     def on_update(self, delta_time):
         """ Movement and game logic """
+        
 
         # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
@@ -209,10 +244,10 @@ class snapGame(arcade.Window):
         hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.card_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
-        for card in hit_list:
-            card.
-            self.score += 1
+        
+        self.select_card()
 
+        self.frame+=1
 
 def main():
     """ Main function """
