@@ -87,7 +87,8 @@ def strump():
 shuffle(deck)
 
 
-######  IRISH SNAP  ##########
+######  IRISH SNAP  ########## :
+''' this code below is finished - look above 4 the shuffle functions and if you finish try out the whistdeal function'''
 global snap
 snap = False
 downpile = []
@@ -237,7 +238,6 @@ def orderpile(a):
      roundpile[i], roundpile[j] = roundpile[j], roundpile[i]
  print(roundpile)
 
-
 def roundw ():
   refpile = roundpile.copy()
   if len(roundpile) == 4:
@@ -268,12 +268,12 @@ def whistmain():
 ##x = x +1 
 ## track score
 #whistdeal(1)
-'''roundpile = ['h06','s04','d06','c11']
+roundpile = ['h06','s04','d06','c11']
 realtr = mtrump()
 a = realtr
-orderpile(a)'''
+orderpile(a)
 '''whistdeal(1)
 betting()
-whistmain()'''
+whistmain()
 snapdeal()
-snapmain()
+snapmain()'''
