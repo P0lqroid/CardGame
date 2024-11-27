@@ -182,7 +182,7 @@ def whisturn():
   place = input('which card would you like to play')
   target = place 
   findcard(target,x)
-  card = players[x].hand.pop[cplace
+  card = players[x].hand.pop[cplace]
   roundpile.append(card)
   print(roundpile,'\n')
  

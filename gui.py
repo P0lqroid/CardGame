@@ -4,16 +4,30 @@ import random
 
 SCREEN_TITLE = "Whistle Hit"
 
-PLAYER_SCALING = 0.05
+PLAYER_SCALING = 0.075
 CARD_SCALING = 0.15
 
-SCREEN_WIDTH = 700
-SCREEN_HEIGHT = 700
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 1000
 
+deck1 = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
+deck = deck1.copy()
+
+def snapdeal():
+      player_index = 0
+      while len(deck) > 1 : 
+        x = (random.randint(0,len(deck)-1)) 
+        card = deck.pop(x) 
+        players[player_index].hand.append(card) 
+        player_index = (player_index + 1) % 4 
+      if deck:
+        last_card = deck.pop()  
+        players[player_index].hand.append(last_card)
+      print(len(deck))
 
 def startup():
-    ogdeck = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
-    deck = ogdeck.copy
+    deck1 = ['s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','s11','s12','s13','h01','h02','h03','h04','h05','h06','h07','h08','h09','h10','h11','h12','h13','c01','c02','c03','c04','c05','c06','c07','c08','c09','c10','c11','c12','c13','d01','d02','d03','d04','d05','d06','d07','d08','d09','d10','d11','d12','d13']
+    deck = deck1.copy()
 
     def shuffle(x):
         random.shuffle(x)
@@ -22,21 +36,10 @@ def startup():
 
     def orderdeck():
         global deck
-        deck = ogdeck.copy
+        deck = deck1.copy()
 
-    def snapdeal():
-        global players
-        player_index = 0
-        while len(deck) > 1 : 
-            x = (random.randint(0,len(deck)-1)) 
-            card = deck.pop(x) 
-            players[player_index].hand.append(card) 
-            player_index = (player_index + 1) % 4 
-        if deck:
-            last_card = deck.pop()
-            players[player_index].hand.append(last_card)
-
-    snapdeal()
+#y = shuffle(deck)
+#print(y)
 
     class Player:
         def __init__(self,priority,bet,score,hand):
@@ -45,7 +48,7 @@ def startup():
             self.score = score 
             self.hand = hand
 
-
+    global player1,player2,player3,player4
     player1 = Player(0,0,0,[])
     player2 = Player(0,0,0,[])
     player3 = Player(0,0,0,[])
@@ -84,28 +87,56 @@ class snapGame(arcade.Window):
         # Show the mouse cursor
         self.set_mouse_visible(False)
 
-    def card_update(self):
-        global players
-        for player_index in range(0,3):
+        snapdeal()
+    #1050 Screen width and height
+    def place_cards(self,player,x,y,orientation,angle):
+        print(player)
+        for i in range(len(players[player].hand)):
+            
+            cardimage=str("Cards/"+players[player].hand[i]+".png")
+            cardimage="Cards/backcard1.png"
+            card = arcade.Sprite(cardimage,CARD_SCALING)
+            
+            if orientation=="v":
+                card.angle += angle
+                newx=int(x+int(i)*40)
+                card.position=(newx,y)
+                self.card_list.append(card)
+                
+            else:
+                card.angle += angle
+                newy=int(y+int(i)*40)
+                card.position=(x,newy)
+                self.card_list.append(card)
 
+    def select_card(self):
+        
+
+    def card_update(self):
+        """
+        for player_index in range(0,4):
             for i in range(len(players[player_index].hand)):
-                cardimage=str(players[player_index].hand[i]+".png")
-                print (cardimage)
+
+                
+                print (count)
                 card = arcade.Sprite(cardimage,CARD_SCALING)
                 xPos = int(100+(int(i)*20))
                 card.position = (xPos, 50)
                 self.card_list.append(card)
-                    
-        
+        """
+        startx=(SCREEN_WIDTH//15)*4
+        starty=(SCREEN_HEIGHT//15)*2
+        self.place_cards(0,startx,starty,"v",0)
+        self.place_cards(1,SCREEN_WIDTH-starty,startx,"h",90)
+        self.place_cards(2,startx,SCREEN_HEIGHT-starty,"v",180)
+        self.place_cards(3,starty,startx,"h",270)
 
-    
 
     def setup(self):
         """ Set up the snap game and initialize the variables. """
 
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
         self.background = arcade.load_texture("Cards\Table.png")
-
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.card_list = arcade.SpriteList()
@@ -119,7 +150,8 @@ class snapGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         self.card_update()
-
+        
+        """
         for i in range(5):
 
             # Create the coin instance
@@ -131,7 +163,7 @@ class snapGame(arcade.Window):
 
             # Add the coin to the lists
             #self.card_list.append(card)
-
+        """
     def on_draw(self):
         """
         Render the screen.
@@ -151,6 +183,12 @@ class snapGame(arcade.Window):
 
         # Render the text
         arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
+        x = SCREEN_WIDTH // 2
+        y = SCREEN_HEIGHT // 2
+        arcade.draw_text("Player 1", x, 40, arcade.color.WHITE, 15, anchor_x="center",rotation=0)
+        arcade.draw_text("Player 2", SCREEN_WIDTH-40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=90)
+        arcade.draw_text("Player 3", x, SCREEN_HEIGHT-40, arcade.color.WHITE, 15, anchor_x="center",rotation=180)
+        arcade.draw_text("Player 4", 40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=270)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -158,7 +196,8 @@ class snapGame(arcade.Window):
         """
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
-
+        #self.card_update()
+        
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -171,7 +210,7 @@ class snapGame(arcade.Window):
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for card in hit_list:
-            card.remove_from_sprite_lists()
+            card.
             self.score += 1
 
 
