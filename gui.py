@@ -1,6 +1,12 @@
-import arcade
+import arcade,arcade.gui
 import os
 import random
+from arcade.gui import (
+    UIFlatButton,
+    UIOnChangeEvent,
+    UITextureButton,
+)
+
 
 SCREEN_TITLE = "Whistle Hit"
 
@@ -56,8 +62,6 @@ def startup():
     global players
     players = [player1,player2,player3,player4]
 
-
-
 class snapGame(arcade.Window):
     """
     Main application class.
@@ -65,7 +69,6 @@ class snapGame(arcade.Window):
 
     def __init__(self, width, height, title):
         """ Initializer """
-
         # Call the parent class initializer
         super().__init__(width, height, title)
 
@@ -75,9 +78,19 @@ class snapGame(arcade.Window):
         # Background image will be stored in this variable
         self.background = None
 
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        box = arcade.gui.UIBoxLayout()
+        button = arcade.gui.UITextureButton(x=0, y=0, texture=arcade.load_texture('blankbutton.png'), texture_hovered=arcade.load_texture('buttonhover.png'), texture_pressed=arcade.load_texture('buttonpress.png'))
+        box.add(button.with_space_around(bottom=20))
+        button.on_click = self.on_click_button
+        self.manager.add(arcade.gui.UIAnchorWidget(anchor_x='center_x', anchor_y='center_y', child=box))
+
+
         # Variables that will hold sprite lists
         self.player_list = None
         self.card_list = None
+        self.button_list = None
 
         # Set up the player info
         self.player_sprite = None
@@ -87,6 +100,7 @@ class snapGame(arcade.Window):
         # Show the mouse cursor
         self.set_mouse_visible(False)
 
+        
         snapdeal()
     #1050 Screen width and height
     def place_cards(self,player,x,y,orientation,angle):
@@ -147,17 +161,6 @@ class snapGame(arcade.Window):
                 card.center_y = card.original_position[1]
 
     def card_update(self):
-        """
-        for player_index in range(0,4):
-            for i in range(len(players[player_index].hand)):
-
-                
-                print (count)
-                card = arcade.Sprite(cardimage,CARD_SCALING)
-                xPos = int(100+(int(i)*20))
-                card.position = (xPos, 50)
-                self.card_list.append(card)
-        """
         startx=(SCREEN_WIDTH//15)*4
         starty=(SCREEN_HEIGHT//15)*2
         self.place_cards(0,startx,starty,"v",0)
@@ -168,36 +171,24 @@ class snapGame(arcade.Window):
 
     def setup(self):
         """ Set up the snap game and initialize the variables. """
-        self.frame=0
+        self.frame = 0
         # Load the background image. Do this in the setup so we don't keep reloading it all the time.
-        self.background = arcade.load_texture("Cards\Table.png")
+        self.background = arcade.load_texture("Cards/Table.png")
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.card_list = arcade.SpriteList()
+        self.button_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite("cursor.png",
-                                           PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite("cursor.png", PLAYER_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         self.card_update()
-        
-        """
-        for i in range(5):
 
-            # Create the coin instance
-            card = arcade.Sprite("Cards\c13.png", CARD_SCALING)
 
-            # Position the coin
-            card.center_x = random.randrange(SCREEN_WIDTH)
-            card.center_y = random.randrange(SCREEN_HEIGHT)
-
-            # Add the coin to the lists
-            #self.card_list.append(card)
-        """
     def on_draw(self):
         """
         Render the screen.
@@ -213,7 +204,12 @@ class snapGame(arcade.Window):
 
         # Draw all the sprites.
         self.card_list.draw()
+        self.manager.draw()
         self.player_list.draw()
+
+        #Draw buttons:
+        
+
 
         # Render the text
         arcade.draw_text(f"Frame: {self.frame}", 10, 20, arcade.color.WHITE, 14)
@@ -248,6 +244,10 @@ class snapGame(arcade.Window):
         self.select_card()
 
         self.frame+=1
+
+    @staticmethod
+    def on_click_button(event):
+        print('Button clicked!')
 
 def main():
     """ Main function """
