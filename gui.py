@@ -9,6 +9,7 @@ from arcade.gui import (
 )
 
 
+
 SCREEN_TITLE = "Whistle Hit"
 
 PLAYER_SCALING = 0.075
@@ -55,23 +56,51 @@ def startup():
         global deck
         deck = deck1.copy()
 
+
+
 #y = shuffle(deck)
 #print(y)
 
-    class Player:
-        def __init__(self,priority,bet,score,hand):
-            self.priority  = priority 
-            self.bet = bet
-            self.score = score 
-            self.hand = hand
+class Player:
+    def __init__(self,priority,bet,score,hand):
+        self.priority  = priority 
+        self.bet = bet
+        self.score = score 
+        self.hand = hand
 
-    global player1,player2,player3,player4
-    player1 = Player(0,0,0,[])
-    player2 = Player(0,0,0,[])
-    player3 = Player(0,0,0,[])
-    player4 = Player(0,0,0,[])
-    global players
-    players = [player1,player2,player3,player4]
+global player1,player2,player3,player4
+player1 = Player(0,0,0,[])
+player2 = Player(0,0,0,[])
+player3 = Player(0,0,0,[])
+player4 = Player(0,0,0,[])
+global players
+players = [player1,player2,player3,player4]
+
+def checksnap():
+  if len(downpile) > 1:
+   x = downpile[-1]
+   y = downpile[-2]
+   x1 = int(x[1:])
+   y1 = int(y[1:])
+   global snap
+   if x1 == y1 :
+    print('SNAP !!')
+    snap = True 
+  if len(downpile) > 0:
+   turncount = 0 
+   tc = str(turncount+1).zfill(2)
+   print(tc)
+   tc = int(tc)
+   x = downpile[-1]
+   x1 = int(x[1:])
+   if tc == x1 : 
+    print('snap22')
+    
+    snap = True
+
+class QuitButton(arcade.gui.UIFlatButton):
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        arcade.exit()
 
 class snapGame(arcade.Window):
     """
@@ -85,7 +114,7 @@ class snapGame(arcade.Window):
 
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
-
+        global player_index
         # Background image will be stored in this variable
         self.background = None
 
@@ -99,16 +128,38 @@ class snapGame(arcade.Window):
             texture_hovered=arcade.load_texture('buttonhover.png'),
             texture_pressed=arcade.load_texture('buttonpress.png'),
             scale=0.6,
-            text="Player "+str(player_index+1)+ " Turn",
+            
+            text="Player Turn",
             style={
             "font_color": arcade.color.BLACK,  # Set the text color to black
             "font_size":16,
             "text_align":"center"
             }
         )
-
         button.on_click = self.on_click_turn
         self.manager.add(button)
+
+        button = arcade.gui.UITextureButton(
+            x=SCREEN_WIDTH-60-144,  # Set the desired x-coordinate
+            y=80,  # Set the desired y-coordinate
+            texture=arcade.load_texture('blankbutton.png'),
+            texture_hovered=arcade.load_texture('buttonhover.png'),
+            texture_pressed=arcade.load_texture('buttonpress.png'),
+            scale=0.6,
+            
+            text="EXIT GAME",
+            style={
+            "font_color": arcade.color.BLACK,  # Set the text color to black
+            "font_size":16,
+            "text_align":"center"
+            }
+        )
+        button.on_click = self.on_click_exit
+        self.manager.add(button)
+
+        snapbutton = arcade.gui.UIFlatButton(
+
+        )
 
 
         # Variables that will hold sprite lists
@@ -188,6 +239,7 @@ class snapGame(arcade.Window):
                 card.center_y = card.original_position[1]
 
     def card_update(self):
+        #Place cards
         startx=(SCREEN_WIDTH//15)*4
         starty=(SCREEN_HEIGHT//15)*2
         self.place_cards(0,startx,starty,"v",0)
@@ -215,21 +267,24 @@ class snapGame(arcade.Window):
 
         self.card_update()
 
-    def playerturn(self):
+    def playerturn(self):   
         global player_index
         global count
-        x = player_index 
+        x = player_index%4
         i = (len(players[x].hand)-1)
         card = players[x].hand.pop(i)
         downpile.append(card)
         print(downpile,'\n')
 
+
+        #Add downpile cards
         for sprite in self.card_list:
             if sprite.value == card:
                 sprite_to_remove = sprite
                 break
         
         sprite_to_remove.remove_flag = True
+        
 
         cardimage=str("Cards/"+card+".png")
         CARD_SCALING1=0.3
@@ -239,7 +294,6 @@ class snapGame(arcade.Window):
         card1.angle -= 45 *count
         card1.original_position=(SCREEN_WIDTH//2,SCREEN_HEIGHT//2)
         self.card_list.append(card1)
-        print(count)
         count+=1
 
     def on_draw(self):
@@ -266,12 +320,21 @@ class snapGame(arcade.Window):
 
         # Render the text
         arcade.draw_text(f"Frame: {self.frame}", 10, 20, arcade.color.WHITE, 14)
+        if snap==False:
+            arcade.draw_text(f"{((player_index%4)+1)}", 125, 100, arcade.color.BLACK, 18)
+        
+        arcade.draw_text(f"{count%13}", SCREEN_WIDTH//2, 300, arcade.color.BLACK, 18)
         x = SCREEN_WIDTH // 2
         y = SCREEN_HEIGHT // 2
         arcade.draw_text("Player 1", x, 40, arcade.color.WHITE, 15, anchor_x="center",rotation=0)
         arcade.draw_text("Player 2", SCREEN_WIDTH-40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=90)
         arcade.draw_text("Player 3", x, SCREEN_HEIGHT-40, arcade.color.WHITE, 15, anchor_x="center",rotation=180)
         arcade.draw_text("Player 4", 40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=270)
+        if snap==True:
+            arcade.draw_text("! SNAP !", x, 250, arcade.color.RED, 30, anchor_x="center",rotation=0)
+            arcade.draw_text("! SNAP !", SCREEN_WIDTH-250, y, arcade.color.RED, 30, anchor_x="center",rotation=90)
+            arcade.draw_text("! SNAP !", x, SCREEN_HEIGHT-250, arcade.color.RED, 30, anchor_x="center",rotation=180)
+            arcade.draw_text("! SNAP !", 250, y, arcade.color.RED, 30, anchor_x="center",rotation=270)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -283,29 +346,37 @@ class snapGame(arcade.Window):
         
     def on_update(self, delta_time):
         """ Movement and game logic """
-        
+
         card_list_copy = arcade.SpriteList(self.card_list)  
         card_list_copy.update()
-
+        if snap == False:
         # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
-        self.card_list.update()
+            self.card_list.update()
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.card_list)
-        self.select_card()
+            self.select_card()
+            checksnap()
+
         # Loop through each colliding sprite, remove it, and add to the score.
-        for sprite in self.card_list:
-            if sprite.remove_flag:
-                self.card_list.remove(sprite)
+            for sprite in self.card_list:
+                if sprite.remove_flag:
+                    self.card_list.remove(sprite)
 
-        
-
+        #Snap
+        if snap == True:
+            print("SNAP!")
         self.frame+=1
 
     def on_click_turn(self,event):
         print('Button clicked!')
-        self.playerturn()
+        if snap==False:
+            self.playerturn()
+            global player_index
+            player_index+= 1
 
+    def on_click_exit(self,event):
+        print("Exit!")
+        arcade.exit()
 def main():
     """ Main function """
     startup()
