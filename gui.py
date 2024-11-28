@@ -61,6 +61,20 @@ def startup():
 #y = shuffle(deck)
 #print(y)
 
+class RotatedUITextureButton(arcade.gui.UITextureButton):
+    def __init__(self, *args, angle=0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.angle = angle
+
+    def draw(self):
+        # Apply rotation before drawing the button
+        arcade.start_render()
+        with arcade.push_matrix():
+            arcade.translate(self.center_x, self.center_y)
+            arcade.rotate(self.angle)
+            arcade.translate(-self.center_x, -self.center_y)
+            super().draw()
+
 class Player:
     def __init__(self,priority,bet,score,hand):
         self.priority  = priority 
@@ -89,16 +103,13 @@ def checksnap():
   if len(downpile) > 0:
    tc = str(turncount+1).zfill(2)
    print(tc)
-   tc = int(tc)
+   tc = int(tc)%13
    x = downpile[-1]
    x1 = int(x[1:])
    if tc == x1 : 
     print('snap22')
     snap = True
 
-class QuitButton(arcade.gui.UIFlatButton):
-    def on_click(self, event: arcade.gui.UIOnClickEvent):
-        arcade.exit()
 
 class snapGame(arcade.Window):
     """
@@ -118,6 +129,7 @@ class snapGame(arcade.Window):
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
+        self.show_snap_button=False
 
         button = arcade.gui.UITextureButton(
             x=60,  # Set the desired x-coordinate
@@ -154,10 +166,62 @@ class snapGame(arcade.Window):
         )
         button.on_click = self.on_click_exit
         self.manager.add(button)
-
-        snapbutton = arcade.gui.UIFlatButton(
-
+        #240 * 160
+        #144 * 96
+        #72 * 48
+        # Create buttons for each player but don't add them yet
+        self.player_buttons = []  # List to store player buttons
+        # Create buttons for player 1
+        button = arcade.gui.UITextureButton(
+            
+            x=SCREEN_WIDTH//2-72,
+            y=215,
+            texture=arcade.load_texture('blankbutton.png'),
+            texture_hovered=arcade.load_texture('buttonhover.png'),
+            texture_pressed=arcade.load_texture('buttonpress.png'),
+            scale=0.6,
         )
+        button.on_click = lambda event: self.player1_snap()
+        self.player_buttons.append(button)  # Store the button in the list
+
+        # Create buttons for player 2
+        button = arcade.gui.UITextureButton(
+            x=SCREEN_WIDTH-215-96,
+            y=SCREEN_HEIGHT//2-72,
+            texture=arcade.load_texture('blankbuttonrotate.png'),
+            texture_hovered=arcade.load_texture('buttonhoverrotate.png'),
+            texture_pressed=arcade.load_texture('buttonpressrotate.png'),
+            scale=0.6,
+        )
+        button.on_click = lambda event: self.player2_snap()
+        self.player_buttons.append(button)  # Store the button in the list
+        #Create button for player 3
+        button = arcade.gui.UITextureButton(
+            x=SCREEN_WIDTH//2-72,
+            y=SCREEN_HEIGHT-215-96,
+            texture=arcade.load_texture('blankbutton.png'),
+            texture_hovered=arcade.load_texture('buttonhover.png'),
+            texture_pressed=arcade.load_texture('buttonpress.png'),
+            scale=0.6,
+        )
+        button.on_click = lambda event: self.player3_snap()
+        self.player_buttons.append(button)  # Store the button in the list
+
+        # Create buttons for player 4
+        button = arcade.gui.UITextureButton(
+            x=215,
+            y=SCREEN_HEIGHT//2-72,
+            texture=arcade.load_texture('blankbuttonrotate.png'),
+            texture_hovered=arcade.load_texture('buttonhoverrotate.png'),
+            texture_pressed=arcade.load_texture('buttonpressrotate.png'),
+            scale=0.6,
+        )
+        button.on_click = lambda event: self.player4_snap()
+        self.player_buttons.append(button)  # Store the button in the list
+
+
+        self.show_snap_buttons = False  # Flag to track if snap buttons are shown
+
 
 
         # Variables that will hold sprite lists
@@ -321,7 +385,7 @@ class snapGame(arcade.Window):
         if snap==False:
             arcade.draw_text(f"{((player_index%4)+1)}", 125, 100, arcade.color.BLACK, 18)
         
-        arcade.draw_text(f"{count%13}", SCREEN_WIDTH//2, 300, arcade.color.BLACK, 18)
+        arcade.draw_text(f"{count%13}", SCREEN_WIDTH//2, 320, arcade.color.BLACK, 18)
         x = SCREEN_WIDTH // 2
         y = SCREEN_HEIGHT // 2
         arcade.draw_text("Player 1", x, 40, arcade.color.WHITE, 15, anchor_x="center",rotation=0)
@@ -329,10 +393,10 @@ class snapGame(arcade.Window):
         arcade.draw_text("Player 3", x, SCREEN_HEIGHT-40, arcade.color.WHITE, 15, anchor_x="center",rotation=180)
         arcade.draw_text("Player 4", 40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=270)
         if snap==True:
-            arcade.draw_text("! SNAP !", x, 250, arcade.color.RED, 30, anchor_x="center",rotation=0)
-            arcade.draw_text("! SNAP !", SCREEN_WIDTH-250, y, arcade.color.RED, 30, anchor_x="center",rotation=90)
-            arcade.draw_text("! SNAP !", x, SCREEN_HEIGHT-250, arcade.color.RED, 30, anchor_x="center",rotation=180)
-            arcade.draw_text("! SNAP !", 250, y, arcade.color.RED, 30, anchor_x="center",rotation=270)
+            arcade.draw_text("SNAP", x, 250, arcade.color.RED, 30, anchor_x="center",rotation=0)
+            arcade.draw_text("SNAP", SCREEN_WIDTH-250, y, arcade.color.RED, 30, anchor_x="center",rotation=90)
+            arcade.draw_text("SNAP", x, SCREEN_HEIGHT-250, arcade.color.RED, 30, anchor_x="center",rotation=180)
+            arcade.draw_text("SNAP", 250, y, arcade.color.RED, 30, anchor_x="center",rotation=270)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -361,10 +425,25 @@ class snapGame(arcade.Window):
                     self.card_list.remove(sprite)
 
         #Snap
-        if snap == True:
-            print("SNAP!")
-        self.frame+=1
 
+        
+
+        if snap == True and not self.show_snap_buttons:
+        # Add buttons when snap is True
+            for button in self.player_buttons:
+                self.manager.add(button)
+            self.show_snap_buttons = True
+
+        elif snap == False and self.show_snap_buttons:
+        # Remove buttons when snap is False
+            for button in self.player_buttons:
+                self.manager.remove(button)
+            self.show_snap_buttons = False
+
+
+
+
+        self.frame+=1
     def on_click_turn(self,event):
         print('Button clicked!')
         if snap==False:
@@ -375,6 +454,24 @@ class snapGame(arcade.Window):
     def on_click_exit(self,event):
         print("Exit!")
         arcade.exit()
+
+    def player1_snap(self):
+    # Code to execute when player 1's button is pressed
+        print("Player 1 button pressed!")
+        
+
+    def player2_snap(self):
+    # Code to execute when player 2's button is pressed
+        print("Player 2 button pressed!")
+
+    def player3_snap(self):
+    # Code to execute when player 3's button is pressed
+        print("Player 3 button pressed!")
+
+    def player4_snap(self):
+    # Code to execute when player 4's button is pressed
+        print("Player 4 button pressed!")
+
 def main():
     """ Main function """
     startup()
