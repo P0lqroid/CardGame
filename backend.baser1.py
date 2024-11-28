@@ -192,6 +192,7 @@ def snapmain():
 ## - - - - - - - - W ~ H ~ I ~ S ~ T - - - - - - - ##
 
 roundpile = []
+setpile = roundpile.copy()
 def whistdeal(round):
       player_index = 0
       while len(player4.hand) < 8-round : 
@@ -280,7 +281,7 @@ def roundw ():
        global hwin
        hwin = i 
   print('player '+ str(hwin+1) + ' has won')
-  players[hwin].miniscorescore = players[hwin].miniscore + 1
+  players[hwin].miniscore = players[hwin].miniscore + 1
   display_smlscores()
 
 def whisthands():
@@ -295,9 +296,13 @@ def whistround(hs):
   global realtr
   realtr = betting()
   for i in range(hs): 
+    wipe_roundpile()
     whisthands()
-
-
+    
+def wipe_roundpile():
+    global roundpile
+    roundpile.clear()
+    print("Roundpile has been wiped!",roundpile)
 
 ## def bigwhist
 # whistdeal(x)
