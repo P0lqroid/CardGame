@@ -138,7 +138,7 @@ def checksnap():
   if len(downpile) > 0:
    tc = str(turncount+1).zfill(2)
    print(tc)
-   tc = int(tc)
+   tc = int(tc)%13
    x = downpile[-1]
    x1 = int(x[1:])
    if tc == x1 : 
