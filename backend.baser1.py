@@ -138,7 +138,7 @@ def checksnap():
   if len(downpile) > 0:
    tc = str(turncount+1).zfill(2)
    print(tc)
-   tc = int(tc)
+   tc = int(tc)%13
    x = downpile[-1]
    x1 = int(x[1:])
    if tc == x1 : 
@@ -167,7 +167,7 @@ def wholeturn():
     display_hands()
 
 def snaprounds():
- while snap == False:
+  while snap == False:
    global player_index
    x = player_index 
    wholeturn()
@@ -176,6 +176,15 @@ def snaprounds():
    global turncount
    turncount = turncount + 1
 
+def setsnap():
+ global snap
+ global turncount
+ global downpile
+ snap = False
+ turncount = 0
+ downpile = srefpile
+ 
+
 #def wipesnap():
 ##snap main below runs the entirety of snap and can be called whenevr 
 
@@ -183,6 +192,7 @@ def snapmain():
  global gtype
  gtype = 1
  reset()
+ setsnap()
  snapdeal()
  snaprounds()
  checksnap()
@@ -335,8 +345,5 @@ def gamemain():
 
 for i in range(0,3):
  snapmain()
- snap = False
- turncount = 0
- downpile = srefpile
- 
+
 
