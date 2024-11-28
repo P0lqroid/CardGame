@@ -36,6 +36,8 @@ player4 = Player(0,0,0,[],0)
 
 players = [player1,player2,player3,player4]
 
+pwayers = [player3,player1,player2,player4]
+
 global player_index
 player_index = 0
 ##miscelaneous##
@@ -146,7 +148,10 @@ def checksnap():
 
 def askplace():
   global player_index
-  place = input('player '+str(player_index + 1)+ ' do you want to play')
+  player_index = int(player_index)
+  z = str(pwayers[player_index])
+  x1 = str(z[6:])
+  place = input('player ' +str(x1)+ ' do you want to play')
   if place == 'yes':
     playerturn()
   else:
@@ -342,8 +347,6 @@ def gamemain():
   whistround(x)
   totalscores()
   
-
-for i in range(0,3):
- snapmain()
+gamemain()
 
 
