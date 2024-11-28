@@ -89,6 +89,8 @@ player3 = Player(0,0,0,[])
 player4 = Player(0,0,0,[])
 global players
 players = [player1,player2,player3,player4]
+global pwayers
+pwayers =[]
 
 def checksnap():
   if len(downpile) > 1:
@@ -181,7 +183,7 @@ class snapGame(arcade.Window):
             texture_pressed=arcade.load_texture('buttonpress.png'),
             scale=0.6,
         )
-        button.on_click = lambda event: self.player1_snap()
+        button.on_click = lambda event, button=button: self.player1_snap(event, button)
         self.player_buttons.append(button)  # Store the button in the list
 
         # Create buttons for player 2
@@ -193,7 +195,7 @@ class snapGame(arcade.Window):
             texture_pressed=arcade.load_texture('buttonpressrotate.png'),
             scale=0.6,
         )
-        button.on_click = lambda event: self.player2_snap()
+        button.on_click = lambda event, button=button: self.player2_snap(event, button)
         self.player_buttons.append(button)  # Store the button in the list
         #Create button for player 3
         button = arcade.gui.UITextureButton(
@@ -204,7 +206,7 @@ class snapGame(arcade.Window):
             texture_pressed=arcade.load_texture('buttonpress.png'),
             scale=0.6,
         )
-        button.on_click = lambda event: self.player3_snap()
+        button.on_click = lambda event, button=button: self.player3_snap(event, button)
         self.player_buttons.append(button)  # Store the button in the list
 
         # Create buttons for player 4
@@ -216,7 +218,7 @@ class snapGame(arcade.Window):
             texture_pressed=arcade.load_texture('buttonpressrotate.png'),
             scale=0.6,
         )
-        button.on_click = lambda event: self.player4_snap()
+        button.on_click = lambda event, button=button: self.player4_snap(event, button)
         self.player_buttons.append(button)  # Store the button in the list
 
 
@@ -392,12 +394,13 @@ class snapGame(arcade.Window):
         arcade.draw_text("Player 2", SCREEN_WIDTH-40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=90)
         arcade.draw_text("Player 3", x, SCREEN_HEIGHT-40, arcade.color.WHITE, 15, anchor_x="center",rotation=180)
         arcade.draw_text("Player 4", 40, y, arcade.color.WHITE, 15, anchor_x="center",rotation=270)
+        """
         if snap==True:
             arcade.draw_text("SNAP", x, 250, arcade.color.RED, 30, anchor_x="center",rotation=0)
             arcade.draw_text("SNAP", SCREEN_WIDTH-250, y, arcade.color.RED, 30, anchor_x="center",rotation=90)
             arcade.draw_text("SNAP", x, SCREEN_HEIGHT-250, arcade.color.RED, 30, anchor_x="center",rotation=180)
             arcade.draw_text("SNAP", 250, y, arcade.color.RED, 30, anchor_x="center",rotation=270)
-
+        """
     def on_mouse_motion(self, x, y, dx, dy):
         """
         Called whenever the mouse moves.
@@ -408,16 +411,20 @@ class snapGame(arcade.Window):
         
     def on_update(self, delta_time):
         """ Movement and game logic """
+        global snap
 
         card_list_copy = arcade.SpriteList(self.card_list)  
         card_list_copy.update()
-        if snap == False:
+        self.card_list.update()
+        if (snap == False):
         # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
-            self.card_list.update()
+            
         # Generate a list of all sprites that collided with the player.
             self.select_card()
-            checksnap()
+            if len(pwayers)!=4:
+
+                checksnap()
 
         # Loop through each colliding sprite, remove it, and add to the score.
             for sprite in self.card_list:
@@ -455,22 +462,31 @@ class snapGame(arcade.Window):
         print("Exit!")
         arcade.exit()
 
-    def player1_snap(self):
+    def player1_snap(self,event,button):
     # Code to execute when player 1's button is pressed
         print("Player 1 button pressed!")
+        pwayers.append('player1')
+        print(pwayers)
+        self.manager.remove(button)
         
-
-    def player2_snap(self):
+    def player2_snap(self,event,button):
     # Code to execute when player 2's button is pressed
         print("Player 2 button pressed!")
-
-    def player3_snap(self):
+        pwayers.append('player2')
+        print(pwayers)
+        self.manager.remove(button)
+    def player3_snap(self,event,button):
     # Code to execute when player 3's button is pressed
         print("Player 3 button pressed!")
-
-    def player4_snap(self):
+        pwayers.append('player3')
+        print(pwayers)
+        self.manager.remove(button)
+    def player4_snap(self,event,button):
     # Code to execute when player 4's button is pressed
         print("Player 4 button pressed!")
+        pwayers.append('player4')
+        print(pwayers)
+        self.manager.remove(button)
 
 def main():
     """ Main function """
