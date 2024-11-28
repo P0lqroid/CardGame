@@ -1,3 +1,2 @@
-import os
-
-print(os.getcwd())
+import arcade, sys
+print(sys.version)
