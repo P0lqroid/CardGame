@@ -36,6 +36,8 @@ player4 = Player(0,0,0,[],0)
 
 players = [player1,player2,player3,player4]
 
+pwayers = [player3,player1,player2,player4]
+
 global player_index
 player_index = 0
 ##miscelaneous##
@@ -50,7 +52,6 @@ def display_bigscores():
   print('player2s score is ',str(player2.gamescore))
   print('player3s score is ',str(player3.gamescore))
   print('player4s score is ',str(player4.gamescore))
-
 
 def display_hands():
  print(player1.hand,'player1', len(player1.hand))
@@ -137,8 +138,8 @@ def checksnap():
     snap = True 
   if len(downpile) > 0:
    tc = str(turncount+1).zfill(2)
-   print(tc)
    tc = int(tc)%13
+   print(tc)
    x = downpile[-1]
    x1 = int(x[1:])
    if tc == x1 : 
@@ -147,7 +148,10 @@ def checksnap():
 
 def askplace():
   global player_index
-  place = input('player '+str(player_index + 1)+ ' do you want to play')
+  player_index = int(player_index)
+  z = str(pwayers[player_index])
+  x1 = str(z[6:])
+  place = input('player ' +str(x1)+ ' do you want to play')
   if place == 'yes':
     playerturn()
   else:
@@ -180,6 +184,7 @@ def setsnap():
  global snap
  global turncount
  global downpile
+ global srefpile
  snap = False
  turncount = 0
  downpile = srefpile
@@ -192,10 +197,10 @@ def snapmain():
  global gtype
  gtype = 1
  reset()
- setsnap()
  snapdeal()
  snaprounds()
  checksnap()
+ setsnap()
 
 
 '''##end of irish snap###'''
@@ -342,8 +347,6 @@ def gamemain():
   whistround(x)
   totalscores()
   
-
-for i in range(0,3):
- snapmain()
+gamemain()
 
 
