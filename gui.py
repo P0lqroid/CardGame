@@ -87,7 +87,6 @@ def checksnap():
     print('SNAP !!')
     snap = True 
   if len(downpile) > 0:
-   turncount = 0 
    tc = str(turncount+1).zfill(2)
    print(tc)
    tc = int(tc)
@@ -95,7 +94,6 @@ def checksnap():
    x1 = int(x[1:])
    if tc == x1 : 
     print('snap22')
-    
     snap = True
 
 class QuitButton(arcade.gui.UIFlatButton):
@@ -240,7 +238,7 @@ class snapGame(arcade.Window):
 
     def card_update(self):
         #Place cards
-        startx=(SCREEN_WIDTH//15)*4
+        startx=(SCREEN_WIDTH//15)*4-4
         starty=(SCREEN_HEIGHT//15)*2
         self.place_cards(0,startx,starty,"v",0)
         self.place_cards(1,SCREEN_WIDTH-starty,startx,"h",90)
