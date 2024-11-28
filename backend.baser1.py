@@ -12,27 +12,44 @@ def orderdeck():
   global deck
   deck = deck1.copy()
 
-#y = shuffle(deck)
-#print(y)
+#~~~~~~~~~~~ G A M E    S E T T I N G ~~~~~~~~~#
+# 0 = off
+# 1 = snap 
+# 2 = whist
+global gtype
+gtype =  0
+
 
 class Player:
- def __init__(self,priority,bet,score,hand):
+ def __init__(self,priority,bet,miniscore,hand,gamescore):
    self.priority  = priority 
    self.bet = bet
-   self.score = score 
+   self.miniscore = miniscore 
    self.hand = hand
+   self.gamescore = gamescore
 
 
-player1 = Player(0,0,0,[])
-player2 = Player(0,0,0,[])
-player3 = Player(0,0,0,[])
-player4 = Player(0,0,0,[])
+player1 = Player(0,0,0,[],0)
+player2 = Player(0,0,0,[],0)
+player3 = Player(0,0,0,[],0)
+player4 = Player(0,0,0,[],0)
 
 players = [player1,player2,player3,player4]
 
 global player_index
 player_index = 0
 ##miscelaneous##
+def display_smlscores():
+  print('player1s score is ',str(player1.miniscore))
+  print('player2s score is ',str(player2.miniscore))
+  print('player3s score is ',str(player3.miniscore))
+  print('player4s score is ',str(player4.miniscore))
+
+def display_bigscores():
+  print('player1s score is ',str(player1.gamescore))
+  print('player2s score is ',str(player2.gamescore))
+  print('player3s score is ',str(player3.gamescore))
+  print('player4s score is ',str(player4.gamescore))
 
 
 def display_hands():
@@ -41,7 +58,7 @@ def display_hands():
  print(player3.hand,'player3', len(player3.hand))
  print(player4.hand,'player4', len(player4.hand))
 
-def snp2whist():
+def reset():
       player1.hand = []
       player2.hand = []
       player3.hand = []
@@ -148,7 +165,7 @@ def wholeturn():
     checksnap()
     display_hands()
 
-def snapmain():
+def snaprounds():
  while snap == False:
    global player_index
    x = player_index 
@@ -159,9 +176,20 @@ def snapmain():
    turncount = turncount + 1
 
 
+##snap main below runs the entirety of snap and can be called whenevr 
+
+def snapmain():
+ global gtype
+ gtype = 1
+ reset()
+ snapdeal()
+ snaprounds()
+ checksnap()
+
+
 '''##end of irish snap###'''
 
-###############whist##############
+## - - - - - - - - W ~ H ~ I ~ S ~ T - - - - - - - ##
 
 roundpile = []
 def whistdeal(round):
@@ -194,6 +222,7 @@ def betting():
      players[i].bet = int(x23)
      totalbet = totalbet + int(x23)
     print(players[i].bet)
+ return realtr
 
 def findcard(target,x):
   for i in range(len(players[x].hand)):
@@ -211,14 +240,14 @@ def whisturn():
   print(roundpile,'\n')
   display_hands()
  
-def whistround():
+def whistplay():
   global player_index
   for i in range(0,4):
     player_index = i
     whisturn() 
 
 def orderpile(a):
- strump()
+ #strump()
  for i in range(len(roundpile)-1):
   for j in range(i + 1, len(roundpile)):
     x = roundpile[i]
@@ -236,22 +265,39 @@ def orderpile(a):
     y1 = str(y[0])
     if x1 == a:
      roundpile[i], roundpile[j] = roundpile[j], roundpile[i]
+    
  print(roundpile)
 
 def roundw ():
   refpile = roundpile.copy()
   if len(roundpile) == 4:
+    global realtr
     orderpile(realtr)
     targetx = roundpile[-1]
     for i in range(len(refpile)):
       if refpile[i] == targetx:
-       return i   
-    print('player'+ str(i+1) + 'has won')
-    players[i+1].score = players[i+1].score + 1
+       print (i) 
+       global hwin
+       hwin = i 
+  print('player '+ str(hwin+1) + ' has won')
+  players[hwin].miniscorescore = players[hwin].miniscore + 1
+  display_smlscores()
 
-def whistmain():
-  whistround()
+def whisthands():
+  whistplay()
   roundw()
+
+def whistround(hs):
+  handsize = 1
+  reset()
+  shuffle(deck)
+  whistdeal(handsize)
+  global realtr
+  realtr = betting()
+  for i in range(hs): 
+    whisthands()
+
+
 
 ## def bigwhist
 # whistdeal(x)
@@ -261,20 +307,22 @@ def whistmain():
 
 #########################
 '''whole game '''
-## while x < 7:
-# snap
-# ## whist 
-##x = x +1 
-## track score
-#whistdeal(1)
-roundpile = ['h06','s04','d06','c11']
-realtr = mtrump()
-a = realtr
 
-roundw()
 
-'''
-orderpile(a)
-whistdeal(1)
-betting()
-whistmain()'''
+def totalscores():
+  for i in range(0,4):
+    if players[i].bet == players[i].miniscore :
+      players[i].gamescore =  players[i].gamescore + players[i].miniscore + 9
+  display_bigscores()
+      
+
+def gamemain():
+ for i in range(0,7):
+  x = 7 - i
+  print('\n'+str(x)+'\n')
+  snapmain() 
+  whistround(x)
+  totalscores()
+  
+
+gamemain()
