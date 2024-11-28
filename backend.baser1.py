@@ -36,7 +36,7 @@ player4 = Player(0,0,0,[],0)
 
 players = [player1,player2,player3,player4]
 
-pwayers = [player3,player1,player2,player4]
+
 
 global player_index
 player_index = 0
@@ -105,7 +105,7 @@ def strump():
 shuffle(deck)
 
 
-######  IRISH SNAP  ########## :
+## - - - - - - - - I~ R ~ I ~ S ~ H  ><  S ~ N ~ A ~ P  - - - - - - - ##
 ''' this code below is finished - look above 4 the shuffle functions and if you finish try out the whistdeal function'''
 global snap
 snap = False
@@ -148,10 +148,7 @@ def checksnap():
 
 def askplace():
   global player_index
-  player_index = int(player_index)
-  z = str(pwayers[player_index])
-  x1 = str(z[6:])
-  place = input('player ' +str(x1)+ ' do you want to play')
+  place = input('player ' +str(player_index +1 )+ ' do you want to play')
   if place == 'yes':
     playerturn()
   else:
@@ -218,9 +215,6 @@ def whistdeal(round):
           player_index = (player_index + 1) % 4 
       display_hands()
       print(len(deck))
-
-def orderplayer():
-  players =[player3,player1,player4,player1]
 
 def betting():
  realtr = mtrump()
@@ -329,16 +323,16 @@ def wipe_roundpile():
 
 
 #########################
-'''whole game '''
 
 
 def totalscores():
   for i in range(0,4):
     if players[i].bet == players[i].miniscore :
       players[i].gamescore =  players[i].gamescore + players[i].miniscore + 9
+    else: 
+      players[i].gamescore =  players[i].gamescore + players[i].miniscore 
   display_bigscores()
       
-
 def gamemain():
  for i in range(0,7):
   x = 7 - i 
