@@ -109,6 +109,7 @@ shuffle(deck)
 global snap
 snap = False
 downpile = []
+srefpile = downpile.copy()
 turncount = 0
 
 def snapdeal():
@@ -175,7 +176,7 @@ def snaprounds():
    global turncount
    turncount = turncount + 1
 
-
+#def wipesnap():
 ##snap main below runs the entirety of snap and can be called whenevr 
 
 def snapmain():
@@ -289,6 +290,8 @@ def whisthands():
   roundw()
 
 def whistround(hs):
+  global gtype 
+  gtype = 2
   handsize = 1
   reset()
   shuffle(deck)
@@ -323,11 +326,17 @@ def totalscores():
 
 def gamemain():
  for i in range(0,7):
-  x = 7 - i
+  x = 7 - i 
   print('\n'+str(x)+'\n')
   snapmain() 
   whistround(x)
   totalscores()
   
 
-gamemain()
+for i in range(0,3):
+ snapmain()
+ snap = False
+ turncount = 0
+ downpile = srefpile
+ 
+
