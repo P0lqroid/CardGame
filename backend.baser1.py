@@ -106,7 +106,6 @@ shuffle(deck)
 
 
 ## - - - - - - - - I~ R ~ I ~ S ~ H  ><  S ~ N ~ A ~ P  - - - - - - - ##
-''' this code below is finished - look above 4 the shuffle functions and if you finish try out the whistdeal function'''
 global snap
 snap = False
 downpile = []
@@ -186,10 +185,6 @@ def setsnap():
  turncount = 0
  downpile = srefpile
  
-
-#def wipesnap():
-##snap main below runs the entirety of snap and can be called whenevr 
-
 def snapmain():
  global gtype
  gtype = 1
@@ -315,11 +310,6 @@ def wipe_roundpile():
     global roundpile
     roundpile.clear()
     print("Roundpile has been wiped!",roundpile)
-
-## def bigwhist
-# whistdeal(x)
-# betting 
-# whistmain
 
 
 #########################
